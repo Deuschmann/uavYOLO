@@ -1,0 +1,20 @@
+# Baseline configuration - minimal model without robustness modules
+
+# Inherit from base.yaml (in practice, you'd load base.yaml first, then override)
+_extends: "base.yaml"
+
+# Disable all robustness augmentations
+augmentation:
+  use_fog: false
+  use_rain: false
+  use_blur: false
+  use_noise: false
+  use_brightness: false
+  use_shadow: false
+
+# Disable robustness modules
+robust_modules:
+  use_background_suppression: false
+  use_frequency_enhancement: false
+  use_condition_aware: false
+

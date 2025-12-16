@@ -1,0 +1,173 @@
+# Base configuration for UAV Object Detection Framework
+
+# Data configuration
+data:
+  root_dir: "data/val"  # Root directory containing images/ and labels/
+  images_dir: "images"
+  labels_dir: "labels"
+  train_split: 0.8  # Train/val split ratio (if not using separate folders)
+  num_workers: 8
+  batch_size: 16
+  img_size: 640  # Input image size (square)
+
+# Class names (update based on your dataset)
+classes:
+  names: ["person", "car", "bicycle"]  # e.g., ["person", "car", "bicycle", ...]
+  num_classes: 3  # Number of classes (including background if applicable)
+
+# Augmentation configuration
+augmentation:
+  # Basic geometric augmentations
+  use_geometric: true
+  geometric:
+    hflip_prob: 0.5
+    vflip_prob: 0.0  # Usually not used for UAV
+    rotation_limit: 10.0  # ±10 degrees
+    scale_limit: 0.2  # ±20% scale
+    mosaic_prob: 0.0  # Disabled by default (memory intensive)
+    mixup_prob: 0.0  # Disabled by default
+  
+  # Weather/robustness augmentations
+  use_fog: true
+  fog:
+    fog_coef_lower: 0.3
+    fog_coef_upper: 0.8
+    alpha_coef: 0.08
+    prob: 0.5
+  
+  use_rain: true
+  rain:
+    slant_lower: -10
+    slant_upper: 10
+    drop_length: 20
+    drop_width: 1
+    blur_value: 5
+    brightness_coefficient: 0.7
+    rain_type: "drizzle"  # or "heavy"
+    prob: 0.5
+  
+  use_blur: true
+  blur:
+    blur_limit: 7
+    prob: 0.5
+  
+  use_noise: true
+  noise:
+    noise_type: "gauss"  # "gauss" or "s&p"
+    var_limit: [10.0, 50.0]
+    prob: 0.5
+  
+  use_brightness: true
+  brightness:
+    brightness_limit: 0.3  # ±30%
+    contrast_limit: 0.3
+    use_gamma: true
+    gamma:
+      gamma_limit: [80, 120]
+      prob: 0.5
+    prob: 0.7
+  
+  use_shadow: true
+  shadow:
+    num_shadows_lower: 1
+    num_shadows_upper: 2
+    shadow_dimension: 5
+    shadow_roi: [[0, 0.5], [0, 1]]
+    prob: 0.3
+    
+  weather_one_of: true
+  # Weather augmentation strategy
+    # If true, apply at most one weather aug per image
+  weather_prob: 0.7  # Probability of applying weather augmentations
+
+# Model configuration
+model:
+  type: "yolo"  # Model type
+  backbone:
+    type: "csp"  # Backbone type ("csp" only for now)
+    in_channels: 3  # Input channels (RGB)
+    width_mult: 1.0  # Width multiplier for model scaling (0.5, 0.75, 1.0, etc.)
+    depth_mult: 1.0  # Depth multiplier for model scaling
+    use_depthwise: false  # Use depthwise separable convolutions (more efficient, slightly less accurate)
+  neck:
+    type: "fpn"  # Neck type ("fpn" or "pan")
+    out_channels: 256  # Output channels for each scale after fusion
+  head:
+    type: "anchor_free"  # Head type ("anchor_free" only for now)
+    num_classes: 1  # Will be overridden by classes.num_classes
+    num_layers: 2  # Number of conv layers in each head
+    hidden_channels: null  # Hidden channels (null = same as neck out_channels)
+    share_weights: false  # Share head weights across scales (more efficient if true)
+
+# Robustness modules configuration
+robust_modules:
+  use_background_suppression: true
+  background_suppression:
+    reduction: 16  # Channel reduction ratio
+    alpha: 0.1  # Residual scaling factor
+  
+  use_frequency_enhancement: true
+  frequency_enhancement:
+    kernel_size: 3  # High-pass filter kernel size
+    alpha: 0.1  # Residual scaling factor
+  
+  use_condition_aware: true
+  condition_aware:
+    condition_dim: 32  # Dimension of condition code
+    use_residual: true  # Use residual connection
+    alpha: 0.2  # Residual scaling factor
+  
+  # Insertion points (where to apply modules)
+  # Can be: ["backbone_p3", "backbone_p4", "backbone_p5", "neck"]
+  insertion_points: ["backbone_p3", "backbone_p4", "backbone_p5"]
+
+# Training configuration
+training:
+  num_epochs: 100
+  device: "cuda"  # "cuda" or "cpu"
+  seed: 42
+  
+  # Optimizer
+  optimizer:
+    type: "adamw"  # "adam", "adamw", "sgd"
+    lr: 0.001
+    weight_decay: 0.0005
+    momentum: 0.937  # For SGD
+  
+  # Learning rate scheduler
+  scheduler:
+    type: "cosine"  # "cosine", "step", "warmup_cosine"
+    warmup_epochs: 3
+    warmup_lr: 0.0001
+    min_lr: 0.00001
+  
+  # Loss weights
+  loss:
+    box_weight: 7.5
+    obj_weight: 1.0
+    cls_weight: 0.5
+    box_loss_type: "ciou"  # "ciou", "giou", "iou"
+  
+  # Checkpointing
+  save_dir: "checkpoints"
+  save_freq: 10  # Save checkpoint every N epochs
+  eval_freq: 5  # Evaluate on validation set every N epochs
+  log_freq: 10  # Print training logs every N iterations
+  
+  # Resume training
+  resume: null  # Path to checkpoint to resume from
+
+# Evaluation configuration
+evaluation:
+  conf_threshold: 0.25 
+  nms_threshold: 0.45
+  max_detections: 1000
+  iou_threshold: 0.5  # For mAP calculation
+
+# Paths
+paths:
+  data_root: "data"
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  output_dir: "outputs"
+

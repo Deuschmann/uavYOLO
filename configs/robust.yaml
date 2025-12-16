@@ -1,0 +1,35 @@
+# Robust configuration - full model with all robustness modules enabled
+
+_extends: "base.yaml"
+
+# Enable all robustness augmentations
+augmentation:
+  use_fog: true
+  use_rain: true
+  use_blur: true
+  use_noise: true
+  use_brightness: true
+  use_shadow: true
+  weather_one_of: true  # Apply at most one weather aug per image
+  weather_prob: 0.8
+
+# Enable all robustness modules
+robust_modules:
+  use_background_suppression: true
+  background_suppression:
+    reduction: 16
+    alpha: 0.1
+  
+  use_frequency_enhancement: true
+  frequency_enhancement:
+    kernel_size: 3
+    alpha: 0.1
+  
+  use_condition_aware: true
+  condition_aware:
+    condition_dim: 32
+    use_residual: true
+    alpha: 0.2
+  
+  insertion_points: ["backbone_p3", "backbone_p4", "backbone_p5"]
+
