@@ -248,3 +248,4 @@ The framework implements:
 
 Loss weights and types can be configured in the config file.
 
+# uavY
