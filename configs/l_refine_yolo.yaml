@@ -1,0 +1,42 @@
+# L_Refine_YOLO Configuration
+# Advanced model with LDown, IRDCB, and ASFB modules
+
+_extends: "base.yaml"
+
+# Model configuration
+model:
+  type: "l_refine_yolo"  # Use the new L_Refine_YOLO architecture
+  backbone:
+    type: "csp"
+    in_channels: 3
+    width_mult: 1.0
+    depth_mult: 1.0
+    use_depthwise: false  # Set to true to use IRDCB in CSPBlock
+  neck:
+    type: "fpn"
+    out_channels: 256
+  head:
+    type: "anchor_free"
+    num_classes: 3  # Will be overridden by classes.num_classes
+    num_layers: 2
+    share_weights: false
+
+# Quick test: reduce epochs for initial testing
+training:
+  num_epochs: 5
+
+# Augmentations (minimal, baseline-like)
+augmentation:
+  use_fog: false
+  use_rain: false
+  use_blur: false
+  use_noise: false
+  use_brightness: true
+  use_shadow: false
+  weather_one_of: false
+
+# Robustness modules (disabled)
+robust_modules:
+  use_background_suppression: false
+  use_frequency_enhancement: false
+  use_condition_aware: false

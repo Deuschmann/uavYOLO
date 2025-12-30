@@ -1,0 +1,15 @@
+# Ablation study configuration: Baseline + Background Suppression Module
+#
+# This configuration is for an ablation study to isolate the effect of the
+# background suppression module. It inherits all settings from the baseline
+# configuration and selectively enables only the background suppression module.
+#
+# All special weather augmentations remain turned OFF.
+# All other robust modules (frequency enhancement, condition-aware) remain OFF.
+
+_extends: "baseline.yaml"
+
+robust_modules:
+  use_background_suppression: true   # <-- ENABLED
+  use_frequency_enhancement: false # <-- DISABLED
+  use_condition_aware: false       # <-- DISABLED

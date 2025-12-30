@@ -1,0 +1,24 @@
+# Comparison configuration - yolov8n model
+
+# Inherit from base.yaml
+_extends: "base.yaml"
+
+# Define the model to be yolov8
+model:
+  type: "yolov8"
+  name: "yolov8n.pt"
+
+# Disable all robustness augmentations
+augmentation:
+  use_fog: false
+  use_rain: false
+  use_blur: false
+  use_noise: false
+  use_brightness: false
+  use_shadow: false
+
+# Disable robustness modules
+robust_modules:
+  use_background_suppression: false
+  use_frequency_enhancement: false
+  use_condition_aware: false

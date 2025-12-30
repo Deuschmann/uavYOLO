@@ -1,0 +1,48 @@
+# L_Refine_YOLO Configuration - Lightweight version with ASFB and IRDCB
+
+_extends: "base.yaml"
+
+# Lightweight backbone
+model:
+  type: "l_refine_yolo"
+  backbone:
+    in_channels: 3
+    width_mult: 0.5      # Lightweight (50% of standard width)
+    depth_mult: 0.5      # 50% depth
+    use_depthwise: false
+  neck:
+    type: "fpn"
+    out_channels: 128    # Reduced from 256
+  head:
+    type: "anchor_free"
+    num_classes: 3
+    num_layers: 2
+    hidden_channels: 128
+    share_weights: false
+
+# Quick test: 1 epoch only
+training:
+  num_epochs: 1
+  optimizer:
+    type: "adamw"
+    lr: 0.001
+    weight_decay: 0.0005
+  scheduler:
+    type: "cosine"
+    min_lr: 0.0001
+  early_stopping:
+    enabled: true
+    patience: 3
+    min_delta: 0.001
+
+# Disable robustness for baseline comparison
+robust_modules:
+  use_background_suppression: false
+  use_frequency_enhancement: false
+  use_condition_aware: false
+
+augmentation:
+  use_fog: false
+  use_rain: false
+  use_blur: false
+  use_noise: false

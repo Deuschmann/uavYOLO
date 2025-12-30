@@ -1,0 +1,19 @@
+# Ablation study configuration: Baseline + Weather Augmentations
+#
+# This configuration is for an ablation study to isolate the effect of the
+# special weather augmentations. It inherits all settings from the baseline
+# configuration and selectively enables only the weather augmentations.
+#
+# All robust modules remain turned OFF.
+
+_extends: "baseline.yaml"
+
+augmentation:
+  use_fog: true
+  use_rain: true
+  use_blur: true
+  use_noise: true
+  use_brightness: true
+  use_shadow: true
+  weather_one_of: true
+  weather_prob: 0.8

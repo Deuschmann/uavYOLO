@@ -1,0 +1,16 @@
+# Ablation study configuration: Baseline + Condition-Aware Module
+#
+# This configuration is for an ablation study to isolate the effect of the
+# condition-aware module. It inherits all settings from the baseline
+# configuration and selectively enables only the condition-aware module.
+#
+# All special weather augmentations remain turned OFF.
+# All other robust modules (background suppression, frequency enhancement) remain OFF.
+
+_extends: "baseline.yaml"
+
+robust_modules:
+  use_background_suppression: false   # <-- DISABLED
+  use_frequency_enhancement: false # <-- DISABLED
+  use_condition_aware: true        # <-- ENABLED
+  insertion_points: ["backbone_p3", "backbone_p4", "backbone_p5"]

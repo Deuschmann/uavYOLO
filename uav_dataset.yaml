@@ -1,0 +1,11 @@
+# uav_dataset.yaml
+
+# 训练集和验证集的图片路径
+train: data/train/image
+val: date/val/images/images
+
+# 类别数量
+nc: 3 # 你的类别数 (0, 1, 2)
+
+# 类别名称
+names: ["person", "car", "bicycle"] # 换成你自己的类别名

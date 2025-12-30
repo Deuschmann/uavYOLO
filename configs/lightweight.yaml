@@ -1,0 +1,13 @@
+# Lightweight Robust configuration
+#
+# This configuration is for a lightweight version of the robust model.
+# It inherits all settings from the robust configuration but uses a smaller
+# backbone to reduce model size and potentially increase inference speed.
+
+_extends: "robust.yaml"
+
+model:
+  backbone:
+    width_mult: 0.50
+    depth_mult: 0.33
+    use_depthwise: true

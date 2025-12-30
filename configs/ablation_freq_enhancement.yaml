@@ -1,0 +1,15 @@
+# Ablation study configuration: Baseline + Frequency Enhancement Module
+#
+# This configuration is for an ablation study to isolate the effect of the
+# frequency enhancement module. It inherits all settings from the baseline
+# configuration and selectively enables only the frequency enhancement module.
+#
+# All special weather augmentations remain turned OFF.
+# All other robust modules (background suppression, condition-aware) remain OFF.
+
+_extends: "baseline.yaml"
+
+robust_modules:
+  use_background_suppression: false   # <-- DISABLED
+  use_frequency_enhancement: true    # <-- ENABLED
+  use_condition_aware: false       # <-- DISABLED
